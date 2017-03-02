@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>计算24点小游戏</title>
+		<script type="text/javascript" src="js/jquery-1.8.0.min.js" ></script>
+		<style>
+			*{margin: 0; padding: 0;}
+			.box li{width: 100px;height: 100px;background: red;line-height: 100px;font-size: 20px;color: #fff;float: left;text-align: center;border: 1px solid #fff;list-style: none;}
+			.symbol {height: 110px;}
+			.num{height: 150px;}
+			.num img{margin-right: 10px;}
+			.reapt,.start,.time{width: 200px;height: 40px; border: none;margin: 20px; font-size: 20px;color: #fff;background: black;}	
+			.time{padding: 10px 20px;}
+		</style>	
+	</head>
+	<body>
+		<div class="box">
+			<div class="num">
+			</div>
+			<button class="reapt">重置</button>
+			<button class="start">开始</button>
+			<span class="time">10</span>
+			<div class="symbol">
+				<ul>
+					<li>+</li>
+					<li>-</li>
+					<li>*</li>
+					<li>/</li>
+					<li>(</li>
+					<li>)</li>
+				</ul>
+			</div>
+		</div>
+		<input type="text" class="val" id = "val" disabled />
+		<button class="result" disabled>计算</button>
+		<button class="clear" disabled>清空</button>
+		<script>
+			var arr = [1,2,3,4,5,6,7,8,9,10,11,12,13];
+			var imgarr = ["a","b","c","d"];
+			
+			//初始化
+			$(".reapt").click(function(){
+				$(".num img").remove();
+				$(".val").val("");
+				for (var i =0;i<4;i++) {
+					var index = Math.floor(Math.random()*arr.length);
+					var imgindex = Math.floor(Math.random()*imgarr.length);
+					var html = '<img src="images/'+ arr[index] + imgarr[imgindex] +'.jpg"/>';
+					$(".num").append(html);
+				}
+			})
+			$(".reapt").click();
+			
+			//开始
+			$(".start").click(function(){
+				$(".val,.result,.clear").attr("disabled",false);
+				var settime = setInterval(function(){
+					var time = $(".time").html();
+					$(".time").html(time-1<0?time:time-1);
+					if(time < 1 ){
+						clearInterval(settime);
+						alert("游戏结束");
+						window.location.reload();
+					}
+				},1000)
+			})
+			
+			//获取当前值
+			$(".box li").click(function(){
+				var val = $(this).html();
+				$(".val").val($(".val").val()+val)
+			})
+			$(".box img").live("click",function(){
+				var src = $(this).attr("src");
+				var imgnum = parseInt(src.substring(src.indexOf('/')+1,src.indexOf('/')+3));
+				$(".val").val($(".val").val()+imgnum)
+			})
+			
+			//计算结果
+			$(".result").click(function(){
+				var expression = $.trim($(".val").val());
+				var result = eval(expression);
+				if(result == 24){
+					alert("这是24")
+				}else{
+					alert("不是24")
+				}
+			})
+			
+			//清空input
+			$(".clear").click(function(){
+				$(".val").val("")
+			})
+		</script>
+	</body>
+</html>
